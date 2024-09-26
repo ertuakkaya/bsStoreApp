@@ -1,22 +1,29 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Entities.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Contracts;
-using Repositories.EFCore;
+using Services.Contracts;
 
-
-namespace WebApi.Controllers
+namespace Presentation.Controllers
 {
-    [Route("api/[controller]")]
+
     [ApiController]
+    [Route("api/books")]
     public class BooksController : ControllerBase
     {
 
-        private readonly IRepositoryManager _manager;
 
-        public BooksController(IRepositoryManager manager)
+
+        /**
+         * Üst katman olan Service katmanına erişmek için IServiceManager interface'ini kullanıyoruz.
+         */
+        private readonly IServiceManager _manager;
+
+        public BooksController(IServiceManager manager)
         {
             _manager = manager;
         }
@@ -25,25 +32,26 @@ namespace WebApi.Controllers
         [HttpGet]
         public IActionResult GetAllBooks()
         {
-            var books = _manager.Book.GetAllBook(false);
-
-            if (books == null || !books.Any())
+            try
             {
-                return NotFound("No books found.");
-            }
+                // trackChanges = false, veritabanında bir değişiklik yapmayacağımız için false olarak belirliyoruz ve performansı arttırıyoruz.
+                var books = _manager.BookService.GetAllBooks(false);
 
-            return Ok(books);
+                return Ok(books);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetOneBook([FromRoute(Name = "id") ] int id)
+        public IActionResult GetOneBook([FromRoute(Name = "id")] int id)
         {
             try
             {
-                var book = _manager
-                    .Book
-                    .GetOneBookById(id, false);
-               
+                var book = _manager.BookService.GetOneBookById(id, false);
+
 
                 if (book is null)
                 {
@@ -63,16 +71,23 @@ namespace WebApi.Controllers
         [HttpPost]
         public IActionResult CreateOneBook([FromBody] Book book)
         {
-            if (book == null)
+            try
             {
-                return BadRequest("Book is null");
+                if (book == null)
+                {
+                    return BadRequest("Book is null");
+                }
+
+                _manager.BookService.CreateOneBook(book);
+
+                return StatusCode(201, book);
             }
-
-            _manager.Book.CreateOneBook(book);
-            _manager.Save();
-           
-
-            return StatusCode(201, book);
+            catch (Exception e)
+            {
+                // Log the inner exception message
+                var innerExceptionMessage = e.InnerException?.Message ?? e.Message;
+                return StatusCode(500, $"An error occurred: {innerExceptionMessage}");
+            }
         }
 
 
@@ -82,22 +97,17 @@ namespace WebApi.Controllers
         {
             try
             {
-                var bookToUpdate = _manager
-                    .Book
-                    .GetOneBookById(id, true);
-                
 
-                if (bookToUpdate == null)
+                // 
+                if (book is null)
                 {
-                    return NotFound();
+                    return BadRequest(); // 400
                 }
 
-                bookToUpdate.Title = book.Title;
-                bookToUpdate.Price = book.Price;
+                _manager.BookService.UpdateOneBook(id, book, true);
 
-                _manager.Save();
 
-                return Ok(bookToUpdate);
+                return NoContent();
             }
             catch (Exception e)
             {
@@ -112,17 +122,8 @@ namespace WebApi.Controllers
         {
             try
             {
-                var bookToDelete = _manager
-                    .Book
-                    .GetOneBookById(id, false);
 
-                if (bookToDelete == null)
-                {
-                    return NotFound();
-                }
-
-                _manager.Book.DeleteOneBook(bookToDelete);
-                _manager.Save();
+                _manager.BookService.DeleteOneBook(id, false);
 
                 return NoContent();
             }
@@ -140,16 +141,15 @@ namespace WebApi.Controllers
         {
             try
             {
-                var entity = _manager
-                    .Book
-                    .GetOneBookById(id, true);
-                    
+                var entity = _manager.BookService.GetOneBookById(id, true);
+
+
 
                 if (entity == null)
                     return NotFound(); // 404
 
                 bookPatch.ApplyTo(entity);
-                _manager.Book.Update(entity);
+                _manager.BookService.UpdateOneBook(id, entity, true);
 
                 return NoContent(); // 204
             }

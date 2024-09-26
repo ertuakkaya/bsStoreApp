@@ -21,6 +21,11 @@ public class BookManager : IBookService
         return _manager.Book.GetAllBook(trackChanges);
     }
 
+    /**
+     * public IEnumerable<Book> GetAllBooks() {
+     * @return _manager.Book.GetAllBook(false);
+     * @Param trackChanges = false
+     */
     public Book GetOneBookById(int id, bool trackChanges)
     {
         return _manager.Book.GetOneBookById(id, trackChanges);
@@ -28,6 +33,7 @@ public class BookManager : IBookService
 
     public Book CreateOneBook(Book book)
     {
+        // Eğer book == null throw ex.
         ArgumentNullException.ThrowIfNull(book);
 
         _manager.Book.CreateOneBook(book);
