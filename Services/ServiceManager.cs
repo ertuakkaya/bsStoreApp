@@ -17,9 +17,9 @@ namespace Services
         /**
          *  Lazy<T> sınıfı, bir değeri yalnızca ihtiyaç duyulduğunda oluşturmak için kullanılır. 
          */
-        public ServiceManager(IRepositoryManager repositoryManager)
+        public ServiceManager(IRepositoryManager repositoryManager, ILoggerService logger)
         {
-            _bookService = new Lazy<IBookService>(() => new BookManager(repositoryManager));
+            _bookService = new Lazy<IBookService>(() => new BookManager(repositoryManager , logger));
         }
 
 

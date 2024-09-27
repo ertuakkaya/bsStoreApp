@@ -1,4 +1,5 @@
-﻿using Entities.Models;
+﻿using Entities.Exceptions;
+using Entities.Models;
 using Repositories.Contracts;
 using Services.Contracts;
 
@@ -8,13 +9,27 @@ public class BookManager : IBookService
 {
     // Dependency Injection
     private readonly IRepositoryManager _manager;
-    
-    public BookManager(IRepositoryManager manager)
+
+    private readonly ILoggerService _logger;
+
+    public BookManager(IRepositoryManager manager, ILoggerService logger)
     {
         _manager = manager;
+        _logger = logger;
     }
-    
-    
+
+
+
+    public Book CreateOneBook(Book book)
+    {
+        
+        _manager.Book.CreateOneBook(book);
+        _manager.Save();
+        return book;
+    }
+
+
+
     // IEnumarable is a collection of items that can be enumerated
     public IEnumerable<Book> GetAllBooks(bool trackChanges)
     {
@@ -28,25 +43,25 @@ public class BookManager : IBookService
      */
     public Book GetOneBookById(int id, bool trackChanges)
     {
-        return _manager.Book.GetOneBookById(id, trackChanges);
-    }
-
-    public Book CreateOneBook(Book book)
-    {
-        // Eğer book == null throw ex.
-        ArgumentNullException.ThrowIfNull(book);
-
-        _manager.Book.CreateOneBook(book);
-        _manager.Save();
+        var book =  _manager.Book.GetOneBookById(id, trackChanges);
+        if (book is null)
+        {
+            throw new BookNotFoundException(id);
+        }
         return book;
     }
+
+   
 
     public void UpdateOneBook(int id, Book book, bool trackChanges)
     {
         var entity = _manager.Book.GetOneBookById(id, trackChanges);
 
         if(entity is null)
-            throw new Exception($"Book id:{id} not found.");
+        {
+            throw new BookNotFoundException(id);
+        }
+            
         
         // chech params
         if (book is null)
@@ -70,7 +85,7 @@ public class BookManager : IBookService
         
         if (entity is null)
         {
-            throw new Exception($"Book id:{id} not found.");
+            throw new BookNotFoundException(id);
         }
         
         _manager.Book.DeleteOneBook(entity);

@@ -39,5 +39,13 @@ namespace WebApi.Extensions
          */
         public static void ConfigureServiceManager(this IServiceCollection services) =>
             services.AddScoped<IServiceManager, ServiceManager>();
+
+
+
+        // Configures the logger service for the service.
+        // Adds the ILoggerService to the container as a singleton service.
+        public static void ConfigureLoggerServive(this IServiceCollection servives) =>
+            
+            servives.AddSingleton<ILoggerService, LoggerManager>();
     }
 }
