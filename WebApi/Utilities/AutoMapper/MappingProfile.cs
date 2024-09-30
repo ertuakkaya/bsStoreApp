@@ -15,8 +15,10 @@ namespace WebApi.Utilities.AutoMapper
         {
             // BookDtoForUpdate sınıfını Book sınıfına map ediyoruz.
             CreateMap<BookDtoForUpdate, Book>();
-        }
 
+            CreateMap<Book, BookDto>();
+        }
+         
 
 
 

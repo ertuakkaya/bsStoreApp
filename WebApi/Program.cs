@@ -12,9 +12,21 @@ LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(string.Concat
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers()
+builder.Services.AddControllers(config =>
+{
+    config.RespectBrowserAcceptHeader = true; // Ýçerik pazarlýðýna uygunluk 
+    config.ReturnHttpNotAcceptable = true; // Kabul edimeyenlere 406 Not Acceptlable ile dön
+})
+    .AddCustomCSVFormatter()
     .AddNewtonsoftJson()
-    .AddApplicationPart(typeof(Presentation.AssemblyReferance).Assembly);
+    .AddApplicationPart(typeof(Presentation.AssemblyReferance).Assembly)
+    .AddXmlDataContractSerializerFormatters(); // XML formatýnda veri dönmek için
+
+
+
+
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

@@ -107,15 +107,19 @@ namespace Presentation.Controllers
 
 
         [HttpPatch("{id:int}")]
-        public IActionResult PartiallyUpdateOneBook([FromRoute(Name = "id")] int id,
-            [FromBody] JsonPatchDocument<Book> bookPatch)
-        {
+        public IActionResult PartiallyUpdateOneBook(
+            
+            [FromRoute(Name = "id")] int id,
+            [FromBody] JsonPatchDocument<Book> bookPatch
+            
+
+        ){
 
             var entity = _manager.BookService.GetOneBookById(id, true);
 
 
             bookPatch.ApplyTo(entity);
-            _manager.BookService.UpdateOneBook(id, entity, true);
+            _manager.BookService.UpdateOneBook(id, new BookDtoForUpdate(entity.Id,entity.Title,entity.Price), true);
 
             return NoContent(); // 204
 

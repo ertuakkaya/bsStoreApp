@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace Entities.DataTransferObjects
 {
-    internal class BookDtoForUpdate
-    {
-    }
+
+
+    /**
+     * 
+     * DTO'lar read-only olmalıdır. DTO'lar sadece veri taşımak için kullanılır.
+     * immutable olmalıdır. Yani DTO'lar bir kez oluşturulduktan sonra değiştirilemez.
+     * LINQ sorguları için kullanılabilir.
+     * 
+     * 
+     * 
+     */
+    public record BookDtoForUpdate(int Id, String Title, decimal Price);
+
 }
