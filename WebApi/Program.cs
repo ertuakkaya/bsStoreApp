@@ -23,6 +23,7 @@ builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureLoggerServive();
+builder.Services.AddAutoMapper(typeof(Program));
 
 
 
