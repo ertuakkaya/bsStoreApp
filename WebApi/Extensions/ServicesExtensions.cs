@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using Presentation.ActionFilters;
 using Repositories.Contracts;
 using Repositories.EFCore;
 using Services;
@@ -47,5 +48,18 @@ namespace WebApi.Extensions
         public static void ConfigureLoggerServive(this IServiceCollection servives) =>
             
             servives.AddSingleton<ILoggerService, LoggerManager>();
+
+
+        /**
+         * Configures the action filters for the service.
+         * Adds the ValidationFilterAttribute and LogFilterAttribute to the container as scoped services.
+         */
+        public static void ConfigureActionFilters(this IServiceCollection services)
+        {
+            services.AddScoped<ValidationFilterAttribute>(); // IoC kaydı 
+            services.AddSingleton<LogFilterAttribute>(); // IoC kaydı
+        }
+
+
     }
 }
