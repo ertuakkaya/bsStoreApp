@@ -12,7 +12,9 @@ namespace Repositories.Contracts
 
         IBookRepository Book { get; }
 
-        void Save();
+
+        // metot void olduğu için geriye dönüş yapmıyoruz. Sadece Task SaveAsync() şeklinde tanımlıyoruz.
+        Task SaveAsync();
 
 
     }
