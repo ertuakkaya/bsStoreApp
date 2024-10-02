@@ -46,7 +46,7 @@ builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureLoggerServive();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureActionFilters();
-
+builder.Services.ConfigureCors();
 
 
 /**
@@ -60,6 +60,9 @@ var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILoggerService>();
 app.ConfigureExceptionHandler(logger);
 
+
+//app.UseSwagger();
+//app.UseSwaggerUI();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -75,6 +78,10 @@ if (app.Environment.IsProduction())
 }
 
 app.UseHttpsRedirection();
+
+
+app.UseCors("CorsPolicy");
+
 
 app.UseRouting();
 
