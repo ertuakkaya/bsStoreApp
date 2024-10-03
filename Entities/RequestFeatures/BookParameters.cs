@@ -20,6 +20,10 @@
         public bool ValidPriceRange => MaxPrice > MinPrice;
 
 
+        // arama
+        public String? SearchTerm { get; set; }
+
+
 
 
     }
