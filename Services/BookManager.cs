@@ -5,6 +5,7 @@ using Entities.Models;
 using Entities.RequestFeatures;
 using Repositories.Contracts;
 using Services.Contracts;
+using System.Dynamic;
 
 namespace Services;
 
@@ -17,11 +18,14 @@ public class BookManager : IBookService
 
     private readonly IMapper _mapper;
 
-    public BookManager(IRepositoryManager manager, ILoggerService logger, IMapper mapper)
+    private readonly IDataShaper<BookDto> _shaper;
+
+    public BookManager(IRepositoryManager manager, ILoggerService logger, IMapper mapper, IDataShaper<BookDto> shaper)
     {
         _manager = manager;
         _logger = logger;
         _mapper = mapper;
+        _shaper = shaper;
     }
 
 
@@ -37,7 +41,7 @@ public class BookManager : IBookService
 
 
     // IEnumarable is a collection of items that can be enumerated
-    public async Task<(IEnumerable<BookDto> books, MetaData metaData)> GetAllBooksAsync(BookParameters bookParameters,bool trackChanges)
+    public async Task<(IEnumerable<ExpandoObject> books, MetaData metaData)> GetAllBooksAsync(BookParameters bookParameters,bool trackChanges)
     {
 
         if (!bookParameters.ValidPriceRange)
@@ -49,7 +53,10 @@ public class BookManager : IBookService
         var booksWithMetaData =  await _manager.Book.GetAllBookAsync(bookParameters,trackChanges);
         var booksDto =  _mapper.Map<IEnumerable<BookDto>>(booksWithMetaData);
 
-        return (booksDto, booksWithMetaData.MetaData);
+        var shapedData = _shaper.ShapeData(booksDto, bookParameters.Fields);
+
+
+        return (books: shapedData, metaData: booksWithMetaData.MetaData);
     }
 
     /**

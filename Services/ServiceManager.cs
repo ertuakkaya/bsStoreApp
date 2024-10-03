@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Entities.DataTransferObjects;
 using Repositories.Contracts;
 using Services.Contracts;
 
@@ -18,9 +19,9 @@ namespace Services
         /**
          *  Lazy<T> sınıfı, bir değeri yalnızca ihtiyaç duyulduğunda oluşturmak için kullanılır. 
          */
-        public ServiceManager(IRepositoryManager repositoryManager, ILoggerService logger , IMapper mapper)
+        public ServiceManager(IRepositoryManager repositoryManager, ILoggerService logger , IMapper mapper, IDataShaper<BookDto> shaper)
         {
-            _bookService = new Lazy<IBookService>(() => new BookManager(repositoryManager , logger , mapper));
+            _bookService = new Lazy<IBookService>(() => new BookManager(repositoryManager , logger , mapper, shaper));
         }
 
 
