@@ -27,7 +27,7 @@ namespace Repositories.EFCore
             var books = await FindAll(trackChanges)
                 .FilterBooks(bookParameters.MinPrice, bookParameters.MaxPrice)
                 .Search(bookParameters.SearchTerm)
-                .OrderBy(b => b.Id)
+                .Sort(bookParameters.OrderBy)
                 .ToListAsync();
 
             return PagedList<Book>.ToPagedList(books, bookParameters.PageNumber, bookParameters.PageSize);
@@ -38,8 +38,7 @@ namespace Repositories.EFCore
 
 
         public async Task<Book> GetOneBookByIdAsync(int id, bool trackChanges) =>
-            await FindByCondition(b => b.Id.Equals(id), trackChanges)
-                .SingleOrDefaultAsync();
+            await FindByCondition(b => b.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
         
 
         public void CreateOneBook(Book book) => Create(book);

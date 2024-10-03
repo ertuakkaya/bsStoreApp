@@ -23,6 +23,11 @@
         // arama
         public String? SearchTerm { get; set; }
 
+        public BookParameters()
+        {
+            OrderBy = "id";
+        }
+
 
 
 

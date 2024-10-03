@@ -2,8 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+
+using System.Linq.Dynamic.Core;
 
 namespace Repositories.EFCore.Extensions
 {
@@ -34,6 +37,29 @@ namespace Repositories.EFCore.Extensions
 
 
         }
+
+
+        public static IQueryable<Book> Sort(this IQueryable<Book> books, string orderByQueryString)
+        {
+            if (string.IsNullOrWhiteSpace(orderByQueryString))
+            {
+                return books.OrderBy(b => b.Id);
+            }
+
+
+            // Yeni bir model geldiğinde sadece OrderQueryBuilder.CreateOrderQuery<Book>(orderByQueryString); kısmını değiştirmemiz yeterli olacak.
+            var orderQuery = OrderQueryBuilder.CreateOrderQuery<Book>(orderByQueryString);
+
+
+            if (orderQuery is null)
+            {
+                return books.OrderBy(b => b.Id);
+            }
+
+            return books.OrderBy(orderQuery);
+        }
+
+
 
 
 
