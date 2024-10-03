@@ -39,6 +39,13 @@ public class BookManager : IBookService
     // IEnumarable is a collection of items that can be enumerated
     public async Task<(IEnumerable<BookDto> books, MetaData metaData)> GetAllBooksAsync(BookParameters bookParameters,bool trackChanges)
     {
+
+        if (!bookParameters.ValidPriceRange)
+        {
+            throw new PriceOutOfRangeBadRequestExceiton(); 
+        }
+
+
         var booksWithMetaData =  await _manager.Book.GetAllBookAsync(bookParameters,trackChanges);
         var booksDto =  _mapper.Map<IEnumerable<BookDto>>(booksWithMetaData);
 
