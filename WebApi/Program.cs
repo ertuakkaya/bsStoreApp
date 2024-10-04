@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 using Presentation.ActionFilters;
 using Repositories.EFCore;
+using Services;
 using Services.Contracts;
 using WebApi.Extensions;
 
@@ -19,10 +20,12 @@ builder.Services.AddControllers(config =>
     config.RespectBrowserAcceptHeader = true; // Ýçerik pazarlýðýna uygunluk 
     config.ReturnHttpNotAcceptable = true; // Kabul edimeyenlere 406 Not Acceptlable ile dön
 })
+    .AddXmlDataContractSerializerFormatters() // XML formatýnda veri dönmek için
     .AddCustomCSVFormatter()
-    .AddNewtonsoftJson()
-    .AddApplicationPart(typeof(Presentation.AssemblyReferance).Assembly)
-    .AddXmlDataContractSerializerFormatters(); // XML formatýnda veri dönmek için
+     .AddApplicationPart(typeof(Presentation.AssemblyReferance).Assembly);
+    //.AddNewtonsoftJson()
+   
+    
 
 
 
@@ -48,6 +51,10 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureActionFilters();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureDataShaper();
+
+builder.Services.AddCustomMediaTypes();
+
+builder.Services.AddScoped<IBookLinks, BookLinks>();
 
 
 /**

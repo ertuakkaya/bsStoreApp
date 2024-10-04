@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.DataTransferObjects;
+using Entities.LinkModels;
 using Entities.Models;
 using Entities.RequestFeatures;
 
@@ -14,7 +15,7 @@ namespace Services.Contracts
     {
 
         // IEnumareble -> foreach ile dolaşılabilir
-        Task<(IEnumerable<ExpandoObject> books , MetaData metaData)> GetAllBooksAsync(BookParameters bookParameters,bool trackChanges);
+        Task<(LinkResponse linkResponse, MetaData metaData)> GetAllBooksAsync(LinkParameters linkParameters,bool trackChanges);
 
         Task<BookDto> GetOneBookByIdAsync(int id, bool trackChanges);
 
