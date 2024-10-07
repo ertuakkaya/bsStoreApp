@@ -47,7 +47,7 @@ namespace Presentation.Controllers
         // ...
 
         [HttpHead]
-        [HttpGet]
+        [HttpGet(Name = "GetAllBooksAsync")]
         [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
         public async Task<IActionResult> GetAllBooksAsync([FromQuery] BookParameters bookParameters)
         {
@@ -87,7 +87,7 @@ namespace Presentation.Controllers
 
 
         [ServiceFilter(typeof(ValidationFilterAttribute))] // Uygulama çalışmadan önce ValidationFilterAttribute sınıfını çalıştırır.
-        [HttpPost]
+        [HttpPost(Name = "CreateOneBookAsync")]
         public async Task<IActionResult> CreateOneBookAsync([FromBody] BookDtoForInsertion bookDto)
         {
 
@@ -134,7 +134,8 @@ namespace Presentation.Controllers
             [FromBody] JsonPatchDocument<BookDtoForUpdate> bookPatch
             
 
-        ){
+        )
+        {
 
             if (bookPatch is null)
             {
