@@ -1,4 +1,5 @@
 ﻿using Entities.DataTransferObjects;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -138,6 +139,26 @@ namespace WebApi.Extensions
             });
         }
 
+        // Cache konfigürasyonu
+        public static void ConfigureResponseCaching(this IServiceCollection services)
+        {
+            services.AddResponseCaching();
+        }
+
+
+        public static void ConfigureHttpCacheHeaders(this IServiceCollection services)
+        {
+            services.AddHttpCacheHeaders(exprationOpt =>
+            {
+                exprationOpt.MaxAge = 90;
+                exprationOpt.CacheLocation = CacheLocation.Public;
+            },
+            validationOpt =>
+            {
+                validationOpt.MustRevalidate = false;
+            }
+                );
+        }
 
 
 

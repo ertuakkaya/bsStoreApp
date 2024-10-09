@@ -19,6 +19,7 @@ builder.Services.AddControllers(config =>
 {
     config.RespectBrowserAcceptHeader = true; // Ýçerik pazarlýðýna uygunluk 
     config.ReturnHttpNotAcceptable = true; // Kabul edimeyenlere 406 Not Acceptlable ile dön
+    config.CacheProfiles.Add("5mins" , new CacheProfile() {Duration = 300});
 })
     .AddXmlDataContractSerializerFormatters() // XML formatýnda veri dönmek için
     .AddCustomCSVFormatter()
@@ -58,6 +59,10 @@ builder.Services.AddScoped<IBookLinks, BookLinks>();
 
 builder.Services.ConfigureVersioning(); // API versiyonlama ekle 
 
+builder.Services.ConfigureResponseCaching(); // Cache ekle
+
+builder.Services.ConfigureHttpCacheHeaders(); // Cache ekle
+
 
 /**
  * 
@@ -91,6 +96,9 @@ app.UseHttpsRedirection();
 
 
 app.UseCors("CorsPolicy");
+
+app.UseResponseCaching(); // Cache ekle (Cors'dan sonra caching çaðrýlmalý!)
+app.UseHttpCacheHeaders(); // Cache ekle (Cors'dan sonra caching çaðrýlmalý!)
 
 
 app.UseRouting();
