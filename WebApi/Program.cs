@@ -56,6 +56,8 @@ builder.Services.AddCustomMediaTypes();
 
 builder.Services.AddScoped<IBookLinks, BookLinks>();
 
+builder.Services.ConfigureVersioning(); // API versiyonlama ekle 
+
 
 /**
  * 

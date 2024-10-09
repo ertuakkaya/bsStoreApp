@@ -127,5 +127,9 @@ public class BookManager : IBookService
         return entity;
     }
 
-
+    public async Task<List<Book>> GetAllBooksAsync(bool trackChances)
+    {
+        var books =  await _manager.Book.GetAllBookAsync(trackChances);
+        return books;
+    }
 }

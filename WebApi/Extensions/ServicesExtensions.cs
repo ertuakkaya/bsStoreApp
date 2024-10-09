@@ -1,9 +1,11 @@
 ﻿using Entities.DataTransferObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Presentation.ActionFilters;
+using Presentation.Controllers;
 using Repositories.Contracts;
 using Repositories.EFCore;
 using Services;
@@ -119,6 +121,25 @@ namespace WebApi.Extensions
 
             });
         }
+
+
+
+        // Versiyonlama konfigürasyonu
+        public static void ConfigureVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(opt =>
+            {
+                opt.ReportApiVersions = true;
+                opt.AssumeDefaultVersionWhenUnspecified = true; // varsayılan versiyonu belirler
+                opt.DefaultApiVersion = new ApiVersion(1, 0); // varsayılan versiyonu belirler
+                opt.ApiVersionReader = new HeaderApiVersionReader("api-version"); // versiyonu okuyacak header'ı belirler
+                opt.Conventions.Controller<BooksController>().HasApiVersion(new ApiVersion(1,0));
+                opt.Conventions.Controller<BooksV2Controller>().HasDeprecatedApiVersion(new ApiVersion(2, 0));
+            });
+        }
+
+
+
 
     }
 }

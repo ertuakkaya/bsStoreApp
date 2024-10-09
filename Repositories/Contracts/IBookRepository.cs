@@ -21,6 +21,9 @@ namespace Repositories.Contracts
 
         Task<PagedList<Book>> GetAllBookAsync(BookParameters bookParameters,bool trackChanges);
 
+
+        Task<List<Book>> GetAllBookAsync(bool trackChances);
+
         Task<Book> GetOneBookByIdAsync(int id, bool trackChanges);
 
         
@@ -30,8 +33,6 @@ namespace Repositories.Contracts
         void UpdateOneBook(Book book);
 
         void DeleteOneBook(Book book);
-
-
-
+        
     }
 }
