@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NLog;
@@ -63,6 +64,12 @@ builder.Services.ConfigureResponseCaching(); // Cache ekle
 
 builder.Services.ConfigureHttpCacheHeaders(); // Cache ekle
 
+builder.Services.AddMemoryCache();
+
+builder.Services.ConfigureRateLimitingOptions(); // Rate limiting ekle
+
+builder.Services.AddHttpContextAccessor(); // HttpContextAccessor ekle
+
 
 /**
  * 
@@ -94,6 +101,8 @@ if (app.Environment.IsProduction())
 
 app.UseHttpsRedirection();
 
+
+app.UseIpRateLimiting(); // Rate limiting ekle
 
 app.UseCors("CorsPolicy");
 
