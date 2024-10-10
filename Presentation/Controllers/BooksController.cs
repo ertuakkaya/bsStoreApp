@@ -9,6 +9,7 @@ using Entities.Exceptions;
 using Entities.Models;
 using Entities.RequestFeatures;
 using Marvin.Cache.Headers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 //using Newtonsoft.Json;
@@ -49,7 +50,7 @@ namespace Presentation.Controllers
 
 
         // ...
-
+        [Authorize]
         [HttpHead]
         [HttpGet(Name = "GetAllBooksAsync")]
         [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
@@ -77,7 +78,7 @@ namespace Presentation.Controllers
 
 
 
-
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetOneBookAsync([FromRoute(Name = "id")] int id)
         {
@@ -90,7 +91,7 @@ namespace Presentation.Controllers
         }
 
 
-
+        [Authorize(Roles = "Editor, Admin")]
         [ServiceFilter(typeof(ValidationFilterAttribute))] // Uygulama çalışmadan önce ValidationFilterAttribute sınıfını çalıştırır.
         [HttpPost(Name = "CreateOneBookAsync")]
         public async Task<IActionResult> CreateOneBookAsync([FromBody] BookDtoForInsertion bookDto)
@@ -105,7 +106,7 @@ namespace Presentation.Controllers
         }
 
 
-
+        [Authorize(Roles = "Editor, Admin")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateOneBookAsync([FromRoute(Name = "id")] int id, [FromBody] BookDtoForUpdate bookDto)
@@ -119,6 +120,7 @@ namespace Presentation.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteOneBookAsync([FromRoute(Name = "id")] int id)
         {
@@ -131,7 +133,7 @@ namespace Presentation.Controllers
 
         }
 
-
+        [Authorize(Roles = "Editor, Admin")]
         [HttpPatch("{id:int}")]
         public async Task<IActionResult> PartiallyUpdateOneBook(
             
@@ -170,7 +172,7 @@ namespace Presentation.Controllers
 
 
 
-
+        [Authorize]
         [HttpOptions]
         public IActionResult GetBooksOptions()
         {

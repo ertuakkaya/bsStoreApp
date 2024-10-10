@@ -71,6 +71,11 @@ builder.Services.ConfigureRateLimitingOptions(); // Rate limiting ekle
 builder.Services.AddHttpContextAccessor(); // HttpContextAccessor ekle
 
 
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration); // kullanýcý adý ve þifre doðrulama ekle
+
+
+
 /**
  * 
  *  app build ediltikten sonra logger'ý almak için servis saðlayýcýsýný kullanýyoruz.
@@ -112,6 +117,8 @@ app.UseHttpCacheHeaders(); // Cache ekle (Cors'dan sonra caching çaðrýlmalý!)
 
 app.UseRouting();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
