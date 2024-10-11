@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Presentation.ActionFilters;
 using Presentation.Controllers;
 using Repositories.Contracts;
@@ -251,5 +252,65 @@ namespace WebApi.Extensions
 
             });
         }
+
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo{
+                        Title = "ASP.Net Web Api",
+                        Version = "v1",
+                        Description = "ASP.Net Web Api",
+                        TermsOfService = new Uri("https://www.google.com.tr"),
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Ertuğrul Akkaya",
+                            Email = "ertuakkaya@gmail.com",
+                            Url = new Uri("https://www.google.com.tr")
+
+                        }
+                    
+                    });
+                s.SwaggerDoc("v2", new OpenApiInfo { Title = "ASP.Net Web Api", Version = "v2" });
+
+                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+
+                });
+
+
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Name = "Bearer"
+                        },
+                        new List<string>()
+                    }
+
+
+                });
+            });
+        }
+
+
+
+
+
     }
 }
